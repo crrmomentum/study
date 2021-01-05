@@ -7,8 +7,8 @@ public:
     Matrix(int rows, int cols, bool is_random = true);
 
     Matrix* operator+(const Matrix& m);
-//    Matrix* operator-(const Matrix& m);
-//    Matrix* operator*(const Matrix& m);
+    Matrix* operator-(const Matrix& m);
+    Matrix* operator*(const Matrix& m);
 
     int* getRawMatrix() const;
     int getCols() const;

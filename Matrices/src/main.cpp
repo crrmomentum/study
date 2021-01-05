@@ -16,4 +16,13 @@ int main() {
     // SUBS
     std::cout << "-------------SUBS-------------" << "\n";
 
+    // MUL
+    std::cout << "-------------MUL-------------" << "\n";
+    Matrix f(1, 5, true);
+    f.print();
+    Matrix g(5, 1, true);
+    g.print();
+    Matrix* h = f * g;
+    h->print();
+    std::cout << "Size is: " << h->getRows() << " " << h->getCols() << std::endl;
 }
