@@ -11,6 +11,20 @@ Matrix::Matrix(int rows, int cols, bool is_random) {
     else {
         _matrix = allocate_empty_matrix();
     }
+    transpose();
+}
+
+Matrix::Matrix(int rows, int cols, int* matrix) {
+    _rows = rows;
+    _cols = cols;
+    _matrix = matrix;
+}
+
+Matrix::~Matrix() {
+    //    delete _matrix;
+    //    delete _matrix_transpose;
+    //    delete _matrix_adj;
+    //    delete _matrix_inv;
 }
 
 int* Matrix::allocate_empty_matrix() {
@@ -23,10 +37,61 @@ int* Matrix::allocate_random_matrix(int maxNumber) {
     int* m = allocate_empty_matrix();
 
     for (int i = 0; i < _rows*_cols; ++i) {
-            m[i] = rand() % maxNumber;
+        m[i] = rand() % maxNumber;
     }
 
     return m;
+}
+
+void Matrix::transpose() {
+    _matrix_transpose = allocate_empty_matrix();
+    int tIndex = 0;
+    for (int i = 0, j = 0; i < _rows*_cols; ++i) {
+        if (i > 0 && (i%_cols == 0)) {
+            ++j;
+        }
+        tIndex = _cols * (i % _cols) + j;
+        _matrix_transpose[i] = _matrix[tIndex];
+    }
+}
+
+int Matrix::det(int* m, int cols) {
+    int res = 0;
+    if (_cols != _rows) {
+        std::cout << "It's not a square matrix, can't get determinant" << std::endl;
+        return 0;
+    }
+    if (cols == 2) {
+        return (_matrix[0] * _matrix[3] - _matrix[1] * _matrix[2]);
+    }
+    //    else {
+    //        res = _matrix[0] * det(m) - _matrix[1] * det(m) + _matrix[2] * det(m);
+    //    }
+
+    return res;
+}
+
+int* Matrix::getSubmatrix(int* matrix, int cols, int pos) {
+    int submatrix_size = (cols-1)*(cols-1);
+    int* submatrix = new int[submatrix_size];
+    for (int j = cols, i = 0; j < cols * cols; ++j) {
+        if ((j-pos)%cols == 0) continue;
+        submatrix[i++] = matrix[j];
+        std::cout << submatrix[i-1] << std::endl;
+    }
+    return submatrix;
+}
+
+void Matrix::adj() {
+    _matrix_adj = allocate_empty_matrix();
+    int aIndex = 0;
+    for (int i = 0, j = 0; i < _rows*_cols; ++i) {
+        if (i > 0 && (i%_cols == 0)) {
+            ++j;
+        }
+        aIndex = _cols * (i % _cols) + j;
+        _matrix_transpose[i] = _matrix[aIndex];
+    }
 }
 
 int* Matrix::getRawMatrix() const {
@@ -106,11 +171,38 @@ Matrix* Matrix::operator*(const Matrix& m) {
     return c;
 }
 
-void Matrix::print() {
+void Matrix::print(Matrix::eMatrixType type) {
+    int* pMatrix = NULL;
+    switch (type) {
+    case REGULAR: pMatrix = _matrix;
+        break;
+    case TRANSPOSE: pMatrix = _matrix_transpose;
+        break;
+    case ADJ: pMatrix = _matrix_adj;
+        break;
+    default: pMatrix = _matrix_inv;
+    }
+
+    if (!pMatrix) {
+        std::cout << "Selected type to print is invalid" << std::endl;
+        return;
+    }
 
     for (int i = 0; i < _rows*_cols; ++i) {
         if (i%_cols == 0) std::cout << std::endl;
-        std::cout << this->getRawMatrix()[i] << "   ";
+        std::cout << pMatrix[i] << "   ";
+    }
+    std::cout << std::endl;
+}
+
+void Matrix::print(int* matrix, int rows, int cols) {
+    if (!matrix) {
+        std::cout << "Input matrix is NULL" << std::endl;
+        return;
+    }
+    for (int i = 0; i < rows*cols; ++i) {
+        if (i%cols == 0) std::cout << std::endl;
+        std::cout << matrix[i] << "   ";
     }
     std::cout << std::endl;
 }
