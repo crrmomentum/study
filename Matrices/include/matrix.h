@@ -6,12 +6,17 @@ class Matrix {
 public:
     Matrix(int rows, int cols, bool is_random = true);
     Matrix(int rows, int cols, int* matrix);
+    Matrix(int rows, int cols);
+    Matrix(int rows);
 
     ~Matrix();
 
     Matrix* operator+(const Matrix& m);
     Matrix* operator-(const Matrix& m);
     Matrix* operator*(const Matrix& m);
+//    Matrix* operator=(const Matrix& m);
+//    Matrix* operator/(const Matrix& m);
+//    int operator()(int row, int col);
 
     typedef enum {
         REGULAR = 0,
@@ -23,9 +28,8 @@ public:
     int* getRawMatrix() const;
     int getCols() const;
     int getRows() const;
-    void print(eMatrixType type);
-
-    static void print(int* matrix, int rows, int cols);
+    void print(eMatrixType type) const;
+    int getDeterminant() const;
 
 private:
     int* allocate_empty_matrix();
@@ -42,6 +46,7 @@ private:
     int* _matrix_inv;
     int _rows;
     int _cols;
+    int _det;
 };
 
 #endif // MATRIX_H

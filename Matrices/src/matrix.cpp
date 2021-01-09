@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string.h>
+#include <math.h>
 #include "matrix.h"
 
 Matrix::Matrix(int rows, int cols, bool is_random) {
@@ -12,12 +13,17 @@ Matrix::Matrix(int rows, int cols, bool is_random) {
         _matrix = allocate_empty_matrix();
     }
     transpose();
+    _det = det(_matrix, _cols);
+    // inverse();
+    // adj();
 }
 
 Matrix::Matrix(int rows, int cols, int* matrix) {
     _rows = rows;
     _cols = cols;
     _matrix = matrix;
+    transpose();
+    _det = det(_matrix, _cols);
 }
 
 Matrix::~Matrix() {
@@ -62,11 +68,16 @@ int Matrix::det(int* m, int cols) {
         return 0;
     }
     if (cols == 2) {
-        return (_matrix[0] * _matrix[3] - _matrix[1] * _matrix[2]);
+        return (m[0] * m[3] - m[1] * m[2]);
     }
-    //    else {
-    //        res = _matrix[0] * det(m) - _matrix[1] * det(m) + _matrix[2] * det(m);
-    //    }
+    else {
+        int* submatrix = NULL;
+        for (int i =0; i < cols; ++i) {
+            submatrix = getSubmatrix(m, cols, i);
+            res += m[i] * pow(-1, i) * det(submatrix, cols-1);
+            delete[] submatrix;
+        }
+    }
 
     return res;
 }
@@ -77,9 +88,12 @@ int* Matrix::getSubmatrix(int* matrix, int cols, int pos) {
     for (int j = cols, i = 0; j < cols * cols; ++j) {
         if ((j-pos)%cols == 0) continue;
         submatrix[i++] = matrix[j];
-        std::cout << submatrix[i-1] << std::endl;
     }
     return submatrix;
+}
+
+int Matrix::getDeterminant() const {
+    return _det;
 }
 
 void Matrix::adj() {
@@ -116,7 +130,7 @@ Matrix* Matrix::operator+(const Matrix& m) {
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A + B
-        c->getRawMatrix()[i] = this->getRawMatrix()[i] + m.getRawMatrix()[i];
+        c->getRawMatrix()[i] = _matrix[i] + m.getRawMatrix()[i];
     }
 
     return c;
@@ -152,7 +166,6 @@ Matrix* Matrix::operator*(const Matrix& m) {
     int bIndex = 0;
     for (int i = 0, k = 0, h =0; i < this->_rows * m.getCols(); ++i) {
         // For loop for sum and multiplication, sum and mul for the number of cols of A, multiply the first row of A by the first col of B
-        std::cout << "***************next iter**************** " << i<< std::endl;
         if (i > 0 && i%(m.getCols()) == 0) {
             ++k;
         }
@@ -163,24 +176,24 @@ Matrix* Matrix::operator*(const Matrix& m) {
             aIndex = j + k*this->_cols;
             bIndex = j*m.getCols() + i%m.getCols();
             c->getRawMatrix()[i] += this->getRawMatrix()[aIndex] * m.getRawMatrix()[bIndex];
-            std::cout << "Product of C element is: " << this->getRawMatrix()[aIndex] << " * " << m.getRawMatrix()[bIndex] << std::endl;
-            std::cout << "value of C is: " << c->getRawMatrix()[i] << std::endl;
+//            std::cout << "Product of C element is: " << this->getRawMatrix()[aIndex] << " * " << m.getRawMatrix()[bIndex] << std::endl;
+//            std::cout << "value of C is: " << c->getRawMatrix()[i] << std::endl;
         }
     }
 
     return c;
 }
 
-void Matrix::print(Matrix::eMatrixType type) {
+void Matrix::print(Matrix::eMatrixType type) const {
     int* pMatrix = NULL;
     switch (type) {
-    case REGULAR: pMatrix = _matrix;
-        break;
-    case TRANSPOSE: pMatrix = _matrix_transpose;
-        break;
-    case ADJ: pMatrix = _matrix_adj;
-        break;
-    default: pMatrix = _matrix_inv;
+        case REGULAR: pMatrix = _matrix;
+            break;
+        case TRANSPOSE: pMatrix = _matrix_transpose;
+            break;
+        case ADJ: pMatrix = _matrix_adj;
+            break;
+        default: pMatrix = _matrix_inv;
     }
 
     if (!pMatrix) {
@@ -188,21 +201,14 @@ void Matrix::print(Matrix::eMatrixType type) {
         return;
     }
 
+    std::cout << "--------------------Printing matrix--------------------" << "\n\n";
     for (int i = 0; i < _rows*_cols; ++i) {
-        if (i%_cols == 0) std::cout << std::endl;
+        if (i > 0 && i%_cols == 0) std::cout << std::endl;
         std::cout << pMatrix[i] << "   ";
     }
-    std::cout << std::endl;
+    std::cout << "\n\n";
 }
 
-void Matrix::print(int* matrix, int rows, int cols) {
-    if (!matrix) {
-        std::cout << "Input matrix is NULL" << std::endl;
-        return;
-    }
-    for (int i = 0; i < rows*cols; ++i) {
-        if (i%cols == 0) std::cout << std::endl;
-        std::cout << matrix[i] << "   ";
-    }
-    std::cout << std::endl;
-}
+//int Matrix::operator()(int row, int col) {
+//    return 0;
+//}

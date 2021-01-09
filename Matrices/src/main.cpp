@@ -1,18 +1,6 @@
 #include <iostream>
 #include "matrix.h"
 
-
-int* ret() {
-    int* ptr = new int[4];
-    int i = 0;
-    ptr[i] = 0;
-    ptr[i++] = 1;
-    ptr[i++] = 2;
-    ptr[i++] = 3;
-    return ptr;
-}
-
-
 int main() {
     std::cout << "Program testing matrices operations" << "\n";
     
@@ -42,13 +30,14 @@ int main() {
     // MUL
     {
         std::cout << "-------------MUL-------------" << "\n";
-        Matrix a(1, 5, true);
+        Matrix a(4, 4, true);
         a.print(Matrix::REGULAR);
-        Matrix b(5, 1, true);
+        Matrix b(4, 4, true);
         b.print(Matrix::REGULAR);
         Matrix* c = a * b;
         c->print(Matrix::REGULAR);
         std::cout << "Size is: " << c->getRows() << " " << c->getCols() << std::endl;
+        std::cout << "a matrix determinant is: " << c->getDeterminant() << std::endl;
     }
 
 }
