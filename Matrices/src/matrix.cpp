@@ -1,29 +1,28 @@
 #include <iostream>
 #include <string.h>
 #include <math.h>
+#include <cstdlib>
 #include "matrix.h"
 
 Matrix::Matrix(int rows, int cols, bool is_random) {
     _rows = rows;
     _cols = cols;
     if (is_random) {
-        _matrix = allocate_random_matrix(100);
+        _matrix = allocate_random_matrix(10);
+        // Calculate internal values  like determinant, transpose, adj
+        init_matrix();
     }
     else {
         _matrix = allocate_empty_matrix();
     }
-    transpose();
-    _det = det(_matrix, _cols);
-    // inverse();
-    // adj();
 }
 
 Matrix::Matrix(int rows, int cols, int* matrix) {
     _rows = rows;
     _cols = cols;
     _matrix = matrix;
-    transpose();
-    _det = det(_matrix, _cols);
+    // Calculate internal values  like determinant, transpose, adj
+    init_matrix();
 }
 
 Matrix::~Matrix() {
@@ -31,6 +30,24 @@ Matrix::~Matrix() {
     //    delete _matrix_transpose;
     //    delete _matrix_adj;
     //    delete _matrix_inv;
+}
+
+void Matrix::init_matrix() {
+    transpose();
+    // We can only get determinants for square matrices
+    if (_rows == _cols) {
+      _det = det(_matrix, _cols);
+      std::cout << "Det is : " << _det << std::endl;
+      getCofactorMatrix();
+//      std::cout << "Printing cofactor" << std::endl;
+//      print(COFACTOR);
+      //adj();
+      // inverse();
+    }
+    else {
+      std::cout << "Cannot get determinant, adjugate, cofactor matrix \
+                    and inverse for non-square matrices " << std::endl;
+    }
 }
 
 int* Matrix::allocate_empty_matrix() {
@@ -63,16 +80,13 @@ void Matrix::transpose() {
 
 int Matrix::det(int* m, int cols) {
     int res = 0;
-    if (_cols != _rows) {
-        std::cout << "It's not a square matrix, can't get determinant" << std::endl;
-        return 0;
-    }
+
     if (cols == 2) {
         return (m[0] * m[3] - m[1] * m[2]);
     }
     else {
         int* submatrix = NULL;
-        for (int i =0; i < cols; ++i) {
+        for (int i = 0; i < cols; ++i) {
             submatrix = getSubmatrix(m, cols, i);
             res += m[i] * pow(-1, i) * det(submatrix, cols-1);
             delete[] submatrix;
@@ -83,17 +97,42 @@ int Matrix::det(int* m, int cols) {
 }
 
 int* Matrix::getSubmatrix(int* matrix, int cols, int pos) {
-    int submatrix_size = (cols-1)*(cols-1);
+    // ToDo: Evaluate 2x2 scenario
+    const int submatrix_size = (cols-1)*(cols-1);
     int* submatrix = new int[submatrix_size];
-    for (int j = cols, i = 0; j < cols * cols; ++j) {
-        if ((j-pos)%cols == 0) continue;
+    int rowNumber = pos/cols;   // Will skip all numbers associated with this row
+    int currRow = 0;
+
+    for (int j = 0, i = 0; j < cols * cols; ++j) {
+        // Calculate current row
+        currRow = j/cols;
+        // This if condition matches the number of row, skip all columns
+        // associated with that row
+        if (currRow == rowNumber) {
+            j = j + cols - 1;
+            continue;
+        }
+        // Match the number of column, skip
+        if ((abs(j-pos))%cols == 0) continue;
         submatrix[i++] = matrix[j];
+        //std::cout << "submatrix val: " << matrix[j] << std::endl;
     }
     return submatrix;
 }
 
 int Matrix::getDeterminant() const {
     return _det;
+}
+
+void Matrix::getCofactorMatrix() {
+    int* submatrix = NULL;
+    _matrix_cofactor = allocate_empty_matrix();
+    // Each cofactor is equal of the corresponding submatrix determinant
+    for (int i = 0; i < _rows*_cols; ++i) {
+        submatrix = getSubmatrix(_matrix, _cols, i);
+        _matrix_cofactor[i] = pow(-1, i) * det(submatrix, _cols-1);
+        delete[] submatrix;
+    }
 }
 
 void Matrix::adj() {
@@ -126,12 +165,14 @@ Matrix* Matrix::operator+(const Matrix& m) {
         std::cout << "Cannot sum these matrices, number of cols or rows don't match" << std::endl;
         return NULL;
     }
-    Matrix* c = new Matrix(_rows, _cols, false);
+    int* matrix = new int[_rows*m.getCols()];
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A + B
-        c->getRawMatrix()[i] = _matrix[i] + m.getRawMatrix()[i];
+        matrix[i] = _matrix[i] + m.getRawMatrix()[i];
     }
+
+    Matrix* c = new Matrix(_rows, _cols, matrix);
 
     return c;
 }
@@ -141,12 +182,15 @@ Matrix* Matrix::operator-(const Matrix& m) {
         std::cout << "Cannot substract these matrices, number of cols or rows don't match" << std::endl;
         return NULL;
     }
-    Matrix* c = new Matrix(_rows, _cols, false);
+
+    int* matrix = new int[_rows*m.getCols()];
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A - B
-        c->getRawMatrix()[i] = this->getRawMatrix()[i] - m.getRawMatrix()[i];
+        matrix[i] = _matrix[i] - m.getRawMatrix()[i];
     }
+
+    Matrix* c = new Matrix(_rows, _cols, matrix);
 
     return c;
 }
@@ -157,7 +201,7 @@ Matrix* Matrix::operator*(const Matrix& m) {
         return NULL;
     }
     // if n = j; A[m,n]*B[j,k] = C[m,k]  // Number of rows of the first matrix and number of columns of the second matrix
-    Matrix* c = new Matrix(this->_rows, m.getCols(), false);
+    int* matrix = new int[_rows*m.getCols()];
 
     // Cij = sum(Aik + Bkj) = sum(A1k + Bk1); let the row of the first matrix fixed and the cols of the second matrix fixed
     // For loop to change matrix index
@@ -175,11 +219,13 @@ Matrix* Matrix::operator*(const Matrix& m) {
         for (int j = 0; j < this->_cols; ++j) {
             aIndex = j + k*this->_cols;
             bIndex = j*m.getCols() + i%m.getCols();
-            c->getRawMatrix()[i] += this->getRawMatrix()[aIndex] * m.getRawMatrix()[bIndex];
+            matrix[i] += _matrix[aIndex] * m.getRawMatrix()[bIndex];
 //            std::cout << "Product of C element is: " << this->getRawMatrix()[aIndex] << " * " << m.getRawMatrix()[bIndex] << std::endl;
 //            std::cout << "value of C is: " << c->getRawMatrix()[i] << std::endl;
         }
     }
+
+    Matrix* c = new Matrix(_rows, m.getCols(), matrix);
 
     return c;
 }
@@ -190,6 +236,8 @@ void Matrix::print(Matrix::eMatrixType type) const {
         case REGULAR: pMatrix = _matrix;
             break;
         case TRANSPOSE: pMatrix = _matrix_transpose;
+            break;
+        case COFACTOR: pMatrix = _matrix_cofactor;
             break;
         case ADJ: pMatrix = _matrix_adj;
             break;

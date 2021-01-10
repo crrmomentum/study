@@ -30,14 +30,16 @@ int main() {
     // MUL
     {
         std::cout << "-------------MUL-------------" << "\n";
-        Matrix a(4, 4, true);
+        Matrix a(3, 3, true);
         a.print(Matrix::REGULAR);
-        Matrix b(4, 4, true);
+        Matrix b(3, 3, true);
         b.print(Matrix::REGULAR);
         Matrix* c = a * b;
-        c->print(Matrix::REGULAR);
-        std::cout << "Size is: " << c->getRows() << " " << c->getCols() << std::endl;
-        std::cout << "a matrix determinant is: " << c->getDeterminant() << std::endl;
+        if (c) {
+            c->print(Matrix::REGULAR);
+            std::cout << "C Size is: " << c->getRows() << " " << c->getCols() << std::endl;
+            std::cout << "C matrix determinant is: " << c->getDeterminant() << std::endl;
+        }
     }
 
 }
