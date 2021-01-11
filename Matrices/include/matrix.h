@@ -5,7 +5,7 @@ class Matrix {
 
 public:
     Matrix(int rows, int cols, bool is_random = true);
-    Matrix(int rows, int cols, int* matrix);
+    Matrix(int rows, int cols, float* matrix);
 
     ~Matrix();
 
@@ -24,31 +24,31 @@ public:
         INVERSE
     } eMatrixType;
 
-    int* getRawMatrix() const;
+    float* getRawMatrix() const;
     int getCols() const;
     int getRows() const;
     void print(eMatrixType type) const;
-    int getDeterminant() const;
+    float getDeterminant() const;
 
 private:
     void init_matrix();
-    int* allocate_empty_matrix();
-    int* allocate_random_matrix(int maxNumber);
-    int det(int* m, int cols);
-    void transpose();
+    float* allocate_empty_matrix();
+    float* allocate_random_matrix(int maxNumber);
+    float det(float* m, int cols);
+    float* transpose(float* matrix);
     void adj();
-    int* getSubmatrix(int* matrix, int pos, int cols);
+    float* getSubmatrix(float* matrix, int pos, int cols);
     void getCofactorMatrix();
-    //int* inv(int* a);
+    void inv();
 
-    int* _matrix;
-    int* _matrix_transpose;
-    int* _matrix_adj;
-    int* _matrix_inv;
-    int* _matrix_cofactor;
+    float* _matrix;
+    float* _matrix_transpose;
+    float* _matrix_adj;
+    float* _matrix_inv;
+    float* _matrix_cofactor;
+    float _det;
     int _rows;
     int _cols;
-    int _det;
 };
 
 #endif // MATRIX_H

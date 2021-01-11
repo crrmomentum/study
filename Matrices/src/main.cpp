@@ -7,7 +7,8 @@ int main() {
     // SUM
     {
         std::cout << "-------------SUM-------------" << "\n";
-        Matrix a(3, 3, true);
+        int arr[9] = {-3,2,-5,-1,0,-2,3,-4,1};
+        Matrix a(3, 3, &arr[0]);
         a.print(Matrix::REGULAR);
         a.print(Matrix::TRANSPOSE);
         Matrix b(3, 3, true);
