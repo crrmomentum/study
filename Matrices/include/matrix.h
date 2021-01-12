@@ -1,6 +1,9 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <map>
+#include <string.h>
+
 class Matrix {
 
 public:
@@ -12,8 +15,8 @@ public:
     Matrix* operator+(const Matrix& m);
     Matrix* operator-(const Matrix& m);
     Matrix* operator*(const Matrix& m);
-//    Matrix* operator=(const Matrix& m);
-//    Matrix* operator/(const Matrix& m);
+    Matrix* operator/(const Matrix& m);
+    Matrix* operator=(const Matrix& m);
 //    int operator()(int row, int col);
 
     typedef enum {
@@ -24,22 +27,25 @@ public:
         INVERSE
     } eMatrixType;
 
-    float* getRawMatrix() const;
+    float* getRegularMatrix() const;
+    float* getInverseMatrix() const;
+    float getDeterminant() const;
     int getCols() const;
     int getRows() const;
     void print(eMatrixType type) const;
-    float getDeterminant() const;
 
 private:
     void init_matrix();
-    float* allocate_empty_matrix();
-    float* allocate_random_matrix(int maxNumber);
-    float det(float* m, int cols);
-    float* transpose(float* matrix);
     void adj();
-    float* getSubmatrix(float* matrix, int pos, int cols);
     void getCofactorMatrix();
     void inv();
+    float det(float* m, int cols);
+    float* allocate_empty_matrix();
+    float* allocate_random_matrix(int maxNumber);
+    float* transpose(float* matrix);
+    float* getSubmatrix(float* matrix, int pos, int cols);
+    float* getProduct(float* b, int cols);
+
 
     float* _matrix;
     float* _matrix_transpose;
@@ -49,6 +55,8 @@ private:
     float _det;
     int _rows;
     int _cols;
+
+    std::map<eMatrixType, std::string> enumValue;
 };
 
 #endif // MATRIX_H

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string.h>
 #include <math.h>
-#include <cstdlib>
 #include "matrix.h"
 
 Matrix::Matrix(int rows, int cols, bool is_random) {
@@ -26,31 +25,29 @@ Matrix::Matrix(int rows, int cols, float* matrix) {
 }
 
 Matrix::~Matrix() {
-    //    delete _matrix;
-    //    delete _matrix_transpose;
-    //    delete _matrix_adj;
-    //    delete _matrix_inv;
+    delete[] _matrix;
+    delete[] _matrix_transpose;
+    delete[] _matrix_adj;
+    delete[] _matrix_inv;
+    delete[] _matrix_cofactor;
 }
 
 void Matrix::init_matrix() {
-    std::cout << "Printing regular matrix" << std::endl;
-    print(REGULAR);
+    enumValue[REGULAR] = "REGULAR MATRIX";
+    enumValue[TRANSPOSE] = "TRANSPOSE MATRIX";
+    enumValue[COFACTOR] = "COFACTOR MATRIX";
+    enumValue[ADJ] = "ADJUGATE MATRIX";
+    enumValue[INVERSE] = "INVERSE MATRIX";
+
     _matrix_transpose = transpose(_matrix);
-    std::cout << "Printing transpose matrix" << std::endl;
-    print(TRANSPOSE);
+
     // We can only get determinants for square matrices
     if (_rows == _cols) {
       _det = det(_matrix, _cols);
       std::cout << "Det is : " << _det << std::endl;
       getCofactorMatrix();
-      std::cout << "Printing cofactor" << std::endl;
-      print(COFACTOR);
       adj();
-      std::cout << "Printing ADJ" << std::endl;
-      print(ADJ);
-      std::cout << "Printing INV" << std::endl;
       inv();
-      print(INVERSE);
     }
     else {
       std::cout << "Cannot get determinant, adjugate, cofactor matrix \
@@ -158,8 +155,12 @@ void Matrix::inv() {
     }
 }
 
-float* Matrix::getRawMatrix() const {
+float* Matrix::getRegularMatrix() const {
     return _matrix;
+}
+
+float* Matrix::getInverseMatrix() const {
+    return _matrix_inv;
 }
 
 int Matrix::getCols() const {
@@ -180,7 +181,7 @@ Matrix* Matrix::operator+(const Matrix& m) {
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A + B
-        matrix[i] = _matrix[i] + m.getRawMatrix()[i];
+        matrix[i] = _matrix[i] + m.getRegularMatrix()[i];
     }
 
     Matrix* c = new Matrix(_rows, _cols, matrix);
@@ -198,7 +199,7 @@ Matrix* Matrix::operator-(const Matrix& m) {
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A - B
-        matrix[i] = _matrix[i] - m.getRawMatrix()[i];
+        matrix[i] = _matrix[i] - m.getRegularMatrix()[i];
     }
 
     Matrix* c = new Matrix(_rows, _cols, matrix);
@@ -211,48 +212,74 @@ Matrix* Matrix::operator*(const Matrix& m) {
         std::cout << "Cannot multiply these matrices" << std::endl;
         return NULL;
     }
+
+    float* matrix = getProduct(m.getRegularMatrix(), m.getCols());
+    Matrix* c = new Matrix(_rows, m.getCols(), matrix);
+
+    return c;
+}
+
+float* Matrix::getProduct(float* b, int bcols) {
     // if n = j; A[m,n]*B[j,k] = C[m,k]  // Number of rows of the first matrix and number of columns of the second matrix
-    float* matrix = new float[_rows*m.getCols()];
+    float* matrix = new float[_rows*bcols];
 
     // Cij = sum(Aik + Bkj) = sum(A1k + Bk1); let the row of the first matrix fixed and the cols of the second matrix fixed
     // For loop to change matrix index
-    std::cout << "value of B rows: " << m.getCols()<< std::endl;
+    std::cout << "value of B rows: " << bcols << std::endl;
     int aIndex = 0;
     int bIndex = 0;
-    for (int i = 0, k = 0, h =0; i < this->_rows * m.getCols(); ++i) {
+    for (int i = 0, k = 0, h =0; i < this->_rows * bcols; ++i) {
         // For loop for sum and multiplication, sum and mul for the number of cols of A, multiply the first row of A by the first col of B
-        if (i > 0 && i%(m.getCols()) == 0) {
+        if (i > 0 && i%bcols == 0) {
             ++k;
         }
-        if (i > 0 && i%(m.getCols()) == 0) {
+        if (i > 0 && i%bcols == 0) {
             ++h;
         }
         for (int j = 0; j < this->_cols; ++j) {
             aIndex = j + k*this->_cols;
-            bIndex = j*m.getCols() + i%m.getCols();
-            matrix[i] += _matrix[aIndex] * m.getRawMatrix()[bIndex];
-//            std::cout << "Product of C element is: " << this->getRawMatrix()[aIndex] << " * " << m.getRawMatrix()[bIndex] << std::endl;
-//            std::cout << "value of C is: " << c->getRawMatrix()[i] << std::endl;
+            bIndex = j*bcols + i%bcols;
+            matrix[i] += _matrix[aIndex] * b[bIndex];
+//            std::cout << "Product of C element is: " << this->getRegularMatrix()[aIndex] << " * " << m.getRegularMatrix()[bIndex] << std::endl;
+//            std::cout << "value of C is: " << c->getRegularMatrix()[i] << std::endl;
         }
     }
 
-    Matrix* c = new Matrix(_rows, m.getCols(), matrix);
+    return matrix;
+}
+
+Matrix* Matrix::operator/(const Matrix& m) {
+    // If B is inverstible C = A/B  ->   C = A*inv(B)
+    if (det(m.getRegularMatrix(), m.getCols()) == 0) {
+        std::cout << "B is not invertible, A/B does not exist" << std::endl;
+        return NULL;
+    }
+
+    float* matrix = getProduct(m.getInverseMatrix(), m.getCols());
+
+    Matrix* c = new Matrix(m.getRows(), m.getCols(), matrix);
 
     return c;
 }
 
 void Matrix::print(Matrix::eMatrixType type) const {
     float* pMatrix = NULL;
+    std::string str;
     switch (type) {
         case REGULAR: pMatrix = _matrix;
-            break;
+             str = enumValue.at(REGULAR);
+             break;
         case TRANSPOSE: pMatrix = _matrix_transpose;
-            break;
+             str = enumValue.at(TRANSPOSE);
+             break;
         case COFACTOR: pMatrix = _matrix_cofactor;
-            break;
+             str = enumValue.at(COFACTOR);
+             break;
         case ADJ: pMatrix = _matrix_adj;
-            break;
+             str = enumValue.at(ADJ);
+             break;
         default: pMatrix = _matrix_inv;
+                 str = enumValue.at(INVERSE);
     }
 
     if (!pMatrix) {
@@ -260,12 +287,19 @@ void Matrix::print(Matrix::eMatrixType type) const {
         return;
     }
 
-    std::cout << "--------------------Printing matrix--------------------" << "\n\n";
+    std::cout << "------------- Printing " << str << " -------------" << "\n\n";
     for (int i = 0; i < _rows*_cols; ++i) {
         if (i > 0 && i%_cols == 0) std::cout << std::endl;
         std::cout << pMatrix[i] << "   ";
     }
     std::cout << "\n\n";
+}
+
+Matrix* Matrix::operator=(const Matrix& m) {
+    if (this != &m) {   // avoid self assignment
+
+    }
+    return NULL;
 }
 
 //int Matrix::operator()(int row, int col) {
