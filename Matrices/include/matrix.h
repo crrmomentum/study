@@ -10,6 +10,10 @@ public:
     Matrix(int rows, int cols, bool is_random = true);
     Matrix(int rows, int cols, float* matrix);
 
+    // Copy constructor
+    Matrix(const Matrix& m);
+
+    // Destructor
     ~Matrix();
 
     Matrix* operator+(const Matrix& m);

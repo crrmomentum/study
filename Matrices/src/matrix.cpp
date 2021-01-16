@@ -24,6 +24,19 @@ Matrix::Matrix(int rows, int cols, float* matrix) {
     init_matrix();
 }
 
+Matrix::Matrix(const Matrix& m) {
+    // By default the compiler creates a copy constructor which performs
+    // a shallow copy, meaning it will reference the same internal variables
+    std::cout << "Calling copy constructor" << std::endl;
+    _cols = m._cols;
+    _rows = m._rows;
+    _matrix = allocate_empty_matrix();
+    //memcpy(_matrix, m._matrix, _cols*_rows*sizeof(m._matrix));
+    std::cout << "_matrix addr is: " << _matrix << std::endl;
+    std::cout << "m._matrix addr is: " << m._matrix << std::endl;
+    init_matrix();
+}
+
 Matrix::~Matrix() {
     delete[] _matrix;
     delete[] _matrix_transpose;
@@ -33,6 +46,7 @@ Matrix::~Matrix() {
 }
 
 void Matrix::init_matrix() {
+    std::cout << "INIT matrix" << std::endl;
     enumValue[REGULAR] = "REGULAR MATRIX";
     enumValue[TRANSPOSE] = "TRANSPOSE MATRIX";
     enumValue[COFACTOR] = "COFACTOR MATRIX";
@@ -58,6 +72,7 @@ void Matrix::init_matrix() {
 float* Matrix::allocate_empty_matrix() {
     float* m = new float[_rows*_cols];
     memset(m, 0, sizeof(m[0]) * _rows * _cols);
+    std::cout << "allocate _matrix addr is: " << _matrix << std::endl;
     return m;
 }
 
