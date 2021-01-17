@@ -31,7 +31,7 @@ Matrix::Matrix(const Matrix& m) {
     _cols = m._cols;
     _rows = m._rows;
     _matrix = allocate_empty_matrix();
-    //memcpy(_matrix, m._matrix, _cols*_rows*sizeof(m._matrix));
+    memcpy(_matrix, m._matrix, _cols*_rows*sizeof(m._matrix[0]));
     std::cout << "_matrix addr is: " << _matrix << std::endl;
     std::cout << "m._matrix addr is: " << m._matrix << std::endl;
     init_matrix();
@@ -46,12 +46,12 @@ Matrix::~Matrix() {
 }
 
 void Matrix::init_matrix() {
-    std::cout << "INIT matrix" << std::endl;
-    enumValue[REGULAR] = "REGULAR MATRIX";
-    enumValue[TRANSPOSE] = "TRANSPOSE MATRIX";
-    enumValue[COFACTOR] = "COFACTOR MATRIX";
-    enumValue[ADJ] = "ADJUGATE MATRIX";
-    enumValue[INVERSE] = "INVERSE MATRIX";
+    std::cout << "INIT matrix " << __LINE__ << std::endl;
+    matrixType[REGULAR] = "REGULAR MATRIX";
+    matrixType[TRANSPOSE] = "TRANSPOSE MATRIX";
+    matrixType[COFACTOR] = "COFACTOR MATRIX";
+    matrixType[ADJ] = "ADJUGATE MATRIX";
+    matrixType[INVERSE] = "INVERSE MATRIX";
 
     _matrix_transpose = transpose(_matrix);
 
@@ -65,14 +65,13 @@ void Matrix::init_matrix() {
     }
     else {
       std::cout << "Cannot get determinant, adjugate, cofactor matrix \
-                    and inverse for non-square matrices " << std::endl;
+                    and inverse for non-square matrices " << __LINE__ << std::endl;
     }
 }
 
 float* Matrix::allocate_empty_matrix() {
     float* m = new float[_rows*_cols];
     memset(m, 0, sizeof(m[0]) * _rows * _cols);
-    std::cout << "allocate _matrix addr is: " << _matrix << std::endl;
     return m;
 }
 
@@ -282,19 +281,19 @@ void Matrix::print(Matrix::eMatrixType type) const {
     std::string str;
     switch (type) {
         case REGULAR: pMatrix = _matrix;
-             str = enumValue.at(REGULAR);
+             str = matrixType.at(REGULAR);
              break;
         case TRANSPOSE: pMatrix = _matrix_transpose;
-             str = enumValue.at(TRANSPOSE);
+             str = matrixType.at(TRANSPOSE);
              break;
         case COFACTOR: pMatrix = _matrix_cofactor;
-             str = enumValue.at(COFACTOR);
+             str = matrixType.at(COFACTOR);
              break;
         case ADJ: pMatrix = _matrix_adj;
-             str = enumValue.at(ADJ);
+             str = matrixType.at(ADJ);
              break;
         default: pMatrix = _matrix_inv;
-                 str = enumValue.at(INVERSE);
+                 str = matrixType.at(INVERSE);
     }
 
     if (!pMatrix) {

@@ -16,13 +16,7 @@ public:
     // Destructor
     ~Matrix();
 
-    Matrix* operator+(const Matrix& m);
-    Matrix* operator-(const Matrix& m);
-    Matrix* operator*(const Matrix& m);
-    Matrix* operator/(const Matrix& m);
-    Matrix* operator=(const Matrix& m);
-//    int operator()(int row, int col);
-
+    // Typedefs
     typedef enum {
         REGULAR = 0,
         TRANSPOSE,
@@ -30,6 +24,15 @@ public:
         ADJ,
         INVERSE
     } eMatrixType;
+
+    typedef std::map<eMatrixType, std::string> MatrixType;
+
+    Matrix* operator+(const Matrix& m);
+    Matrix* operator-(const Matrix& m);
+    Matrix* operator*(const Matrix& m);
+    Matrix* operator/(const Matrix& m);
+    Matrix* operator=(const Matrix& m);
+//    int operator()(int row, int col);
 
     float* getRegularMatrix() const;
     float* getInverseMatrix() const;
@@ -60,7 +63,8 @@ private:
     int _rows;
     int _cols;
 
-    std::map<eMatrixType, std::string> enumValue;
+    //MatrixTypePtr matrixTypePtr;
+    MatrixType matrixType;
 };
 
 #endif // MATRIX_H
