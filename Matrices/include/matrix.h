@@ -3,8 +3,11 @@
 
 #include <map>
 #include <string.h>
+#include "matrix_factory.h"
 
-class Matrix {
+namespace CustomMatrix {
+
+class Matrix : public MatrixFactory {
 
 public:
     Matrix(int rows, int cols, bool is_random = true);
@@ -16,42 +19,33 @@ public:
     // Destructor
     ~Matrix();
 
-    // Typedefs
-    typedef enum {
-        REGULAR = 0,
-        TRANSPOSE,
-        COFACTOR,
-        ADJ,
-        INVERSE
-    } eMatrixType;
-
     typedef std::map<eMatrixType, std::string> MatrixType;
 
-    Matrix* operator+(const Matrix& m);
-    Matrix* operator-(const Matrix& m);
-    Matrix* operator*(const Matrix& m);
-    Matrix* operator/(const Matrix& m);
-    Matrix* operator=(const Matrix& m);
+    Matrix* operator+(const Matrix& m) override;
+    Matrix* operator-(const Matrix& m) override;
+    Matrix* operator*(const Matrix& m) override;
+    Matrix* operator/(const Matrix& m) override;
+    Matrix* operator=(const Matrix& m) override;
 //    int operator()(int row, int col);
 
-    float* getRegularMatrix() const;
-    float* getInverseMatrix() const;
-    float getDeterminant() const;
-    int getCols() const;
-    int getRows() const;
-    void print(eMatrixType type) const;
+    float* get_regular_matrix() const override;
+    float* get_inverse_matrix() const override;
+    float get_determinant() const override;
+    int get_cols() const override;
+    int get_rows() const override;
+    void print(eMatrixType type) const override;
 
 private:
     void init_matrix();
-    void adj();
-    void getCofactorMatrix();
-    void inv();
-    float det(float* m, int cols);
+    void calc_adjugate();
+    void calc_cofactor();
+    void calc_inverse();
+    float calc_determinant(float* m, int cols);
     float* allocate_empty_matrix();
     float* allocate_random_matrix(int maxNumber);
     float* transpose(float* matrix);
-    float* getSubmatrix(float* matrix, int pos, int cols);
-    float* getProduct(float* b, int cols);
+    float* get_submatrix(float* matrix, int pos, int cols);
+    float* get_product(float* b, int cols);
 
 
     float* _matrix;
@@ -67,4 +61,5 @@ private:
     MatrixType matrixType;
 };
 
+}
 #endif // MATRIX_H

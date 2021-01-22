@@ -17,7 +17,8 @@ include_directories(
 
 # Set source files
 set (SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
-             ${CMAKE_CURRENT_SOURCE_DIR}/src/matrix.cpp)
+             ${CMAKE_CURRENT_SOURCE_DIR}/src/matrix.cpp
+             ${CMAKE_CURRENT_SOURCE_DIR}/src/matrix_factory.cpp)
 
 # add the executable
 add_executable (${PROJECT} ${SOURCES})

@@ -5,6 +5,7 @@ int main() {
     std::cout << "Program testing matrices operations" << "\n";
     
     // SUM
+#if 0
     {
         std::cout << "************************** SUM **********************" << "\n";
         int arr[9] = {-3,2,-5,-1,0,-2,3,-4,1};
@@ -38,8 +39,8 @@ int main() {
         Matrix* c = a * b;
         if (c) {
             c->print(Matrix::REGULAR);
-            std::cout << "C Size is: " << c->getRows() << " " << c->getCols() << std::endl;
-            std::cout << "C matrix determinant is: " << c->getDeterminant() << std::endl;
+            std::cout << "C Size is: " << c->get_rows() << " " << c->get_cols() << std::endl;
+            std::cout << "C matrix determinant is: " << c->get_determinant() << std::endl;
         }
     }
 
@@ -53,13 +54,13 @@ int main() {
         Matrix* c = a / b;
         if (c) {
             c->print(Matrix::REGULAR);
-            std::cout << "C Size is: " << c->getRows() << " " << c->getCols() << std::endl;
+            std::cout << "C Size is: " << c->get_rows() << " " << c->get_cols() << std::endl;
         }
         Matrix d = a;
         delete c;
-        std::cout << "D Size is: " << d.getRows() << " " << d.getCols() << std::endl;
+        std::cout << "D Size is: " << d.get_rows() << " " << d.get_cols() << std::endl;
         d.print(Matrix::REGULAR);
     }
-    std::cout << "Hello" << std::endl;
+#endif
 }
 

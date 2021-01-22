@@ -3,6 +3,8 @@
 #include <math.h>
 #include "matrix.h"
 
+namespace CustomMatrix {
+
 Matrix::Matrix(int rows, int cols, bool is_random) {
     _rows = rows;
     _cols = cols;
@@ -57,11 +59,11 @@ void Matrix::init_matrix() {
 
     // We can only get determinants for square matrices
     if (_rows == _cols) {
-      _det = det(_matrix, _cols);
+      _det = calc_determinant(_matrix, _cols);
       std::cout << "Det is : " << _det << std::endl;
-      getCofactorMatrix();
-      adj();
-      inv();
+      calc_cofactor();
+      calc_adjugate();
+      calc_inverse();
     }
     else {
       std::cout << "Cannot get determinant, adjugate, cofactor matrix \
@@ -99,7 +101,7 @@ float* Matrix::transpose(float* matrix) {
     return output;
 }
 
-float Matrix::det(float* m, int cols) {
+float Matrix::calc_determinant(float* m, int cols) {
     int res = 0;
 
     if (cols == 2) {
@@ -108,8 +110,8 @@ float Matrix::det(float* m, int cols) {
     else {
         float* submatrix = NULL;
         for (int i = 0; i < cols; ++i) {
-            submatrix = getSubmatrix(m, cols, i);
-            res += m[i] * pow(-1, i) * det(submatrix, cols-1);
+            submatrix = get_submatrix(m, cols, i);
+            res += m[i] * pow(-1, i) * calc_determinant(submatrix, cols-1);
             delete[] submatrix;
         }
     }
@@ -117,7 +119,7 @@ float Matrix::det(float* m, int cols) {
     return res;
 }
 
-float* Matrix::getSubmatrix(float* matrix, int cols, int pos) {
+float* Matrix::get_submatrix(float* matrix, int cols, int pos) {
     // ToDo: Evaluate 2x2 scenario
     const int submatrix_size = (cols-1)*(cols-1);
     float* submatrix = new float[submatrix_size];
@@ -141,26 +143,26 @@ float* Matrix::getSubmatrix(float* matrix, int cols, int pos) {
     return submatrix;
 }
 
-float Matrix::getDeterminant() const {
+float Matrix::get_determinant() const {
     return _det;
 }
 
-void Matrix::getCofactorMatrix() {
+void Matrix::calc_cofactor() {
     float* submatrix = NULL;
     _matrix_cofactor = allocate_empty_matrix();
     // Each cofactor is equal of the corresponding submatrix determinant
     for (int i = 0; i < _rows*_cols; ++i) {
-        submatrix = getSubmatrix(_matrix, _cols, i);
-        _matrix_cofactor[i] = pow(-1, i) * det(submatrix, _cols-1);
+        submatrix = get_submatrix(_matrix, _cols, i);
+        _matrix_cofactor[i] = pow(-1, i) * calc_determinant(submatrix, _cols-1);
         delete[] submatrix;
     }
 }
 
-void Matrix::adj() {
+void Matrix::calc_adjugate() {
     _matrix_adj = transpose(_matrix_cofactor);
 }
 
-void Matrix::inv() {
+void Matrix::calc_inverse() {
     if (_det != 0) {
         _matrix_inv = allocate_empty_matrix();
         for (int i = 0; i < _cols*_rows; ++i) {
@@ -169,33 +171,33 @@ void Matrix::inv() {
     }
 }
 
-float* Matrix::getRegularMatrix() const {
+float* Matrix::get_regular_matrix() const {
     return _matrix;
 }
 
-float* Matrix::getInverseMatrix() const {
+float* Matrix::get_inverse_matrix() const {
     return _matrix_inv;
 }
 
-int Matrix::getCols() const {
+int Matrix::get_cols() const {
     return _cols;
 }
 
-int Matrix::getRows() const {
+int Matrix::get_rows() const {
     return _rows;
 }
 
 Matrix* Matrix::operator+(const Matrix& m) {
 
-    if (m.getCols() != _cols || m.getRows() != _rows) {
+    if (m.get_cols() != _cols || m.get_rows() != _rows) {
         std::cout << "Cannot sum these matrices, number of cols or rows don't match" << std::endl;
         return NULL;
     }
-    float* matrix = new float[_rows*m.getCols()];
+    float* matrix = new float[_rows*m.get_cols()];
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A + B
-        matrix[i] = _matrix[i] + m.getRegularMatrix()[i];
+        matrix[i] = _matrix[i] + m.get_regular_matrix()[i];
     }
 
     Matrix* c = new Matrix(_rows, _cols, matrix);
@@ -204,16 +206,16 @@ Matrix* Matrix::operator+(const Matrix& m) {
 }
 
 Matrix* Matrix::operator-(const Matrix& m) {
-    if (m.getCols() != _cols || m.getRows() != _rows) {
+    if (m.get_cols() != _cols || m.get_rows() != _rows) {
         std::cout << "Cannot substract these matrices, number of cols or rows don't match" << std::endl;
         return NULL;
     }
 
-    float* matrix = new float[_rows*m.getCols()];
+    float* matrix = new float[_rows*m.get_cols()];
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A - B
-        matrix[i] = _matrix[i] - m.getRegularMatrix()[i];
+        matrix[i] = _matrix[i] - m.get_regular_matrix()[i];
     }
 
     Matrix* c = new Matrix(_rows, _cols, matrix);
@@ -222,18 +224,18 @@ Matrix* Matrix::operator-(const Matrix& m) {
 }
 
 Matrix* Matrix::operator*(const Matrix& m) {
-    if (this->_cols != m.getRows()) {
+    if (this->_cols != m.get_rows()) {
         std::cout << "Cannot multiply these matrices" << std::endl;
         return NULL;
     }
 
-    float* matrix = getProduct(m.getRegularMatrix(), m.getCols());
-    Matrix* c = new Matrix(_rows, m.getCols(), matrix);
+    float* matrix = get_product(m.get_regular_matrix(), m.get_cols());
+    Matrix* c = new Matrix(_rows, m.get_cols(), matrix);
 
     return c;
 }
 
-float* Matrix::getProduct(float* b, int bcols) {
+float* Matrix::get_product(float* b, int bcols) {
     // if n = j; A[m,n]*B[j,k] = C[m,k]  // Number of rows of the first matrix and number of columns of the second matrix
     float* matrix = new float[_rows*bcols];
 
@@ -264,14 +266,14 @@ float* Matrix::getProduct(float* b, int bcols) {
 
 Matrix* Matrix::operator/(const Matrix& m) {
     // If B is inverstible C = A/B  ->   C = A*inv(B)
-    if (det(m.getRegularMatrix(), m.getCols()) == 0) {
+    if (calc_determinant(m.get_regular_matrix(), m.get_cols()) == 0) {
         std::cout << "B is not invertible, A/B does not exist" << std::endl;
         return NULL;
     }
 
-    float* matrix = getProduct(m.getInverseMatrix(), m.getCols());
+    float* matrix = get_product(m.get_inverse_matrix(), m.get_cols());
 
-    Matrix* c = new Matrix(m.getRows(), m.getCols(), matrix);
+    Matrix* c = new Matrix(m.get_rows(), m.get_cols(), matrix);
 
     return c;
 }
@@ -319,3 +321,5 @@ Matrix* Matrix::operator=(const Matrix& m) {
 //int Matrix::operator()(int row, int col) {
 //    return 0;
 //}
+
+}
