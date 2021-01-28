@@ -1,11 +1,10 @@
 #include <iostream>
-#include "matrix.h"
+#include "matrix_factory.h"
 
 int main() {
     std::cout << "Program testing matrices operations" << "\n";
-    
-    // SUM
 #if 0
+    // SUM
     {
         std::cout << "************************** SUM **********************" << "\n";
         int arr[9] = {-3,2,-5,-1,0,-2,3,-4,1};

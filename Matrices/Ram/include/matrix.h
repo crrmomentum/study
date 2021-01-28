@@ -3,7 +3,6 @@
 
 #include <map>
 #include <string.h>
-#include "matrix_factory.h"
 
 namespace CustomMatrix {
 

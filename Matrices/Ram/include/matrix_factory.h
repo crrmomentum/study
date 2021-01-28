@@ -1,14 +1,14 @@
 #ifndef MATRIXFACTORY_H
 #define MATRIXFACTORY_H
 
-namespace CustomMatrix {
+#include "matrix.h"
 
-class Matrix;
+namespace CustomMatrix {
 
 class MatrixFactory {
 
 public:
-    static Matrix* create_matrix();
+    static Matrix* create_matrix(int rows, int cols, float* matrix = nullptr);
 
     // Typedefs
     typedef enum {
