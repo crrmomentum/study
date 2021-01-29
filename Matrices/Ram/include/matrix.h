@@ -4,9 +4,11 @@
 #include <map>
 #include <string.h>
 
+#include "matrix_interface.h"
+
 namespace CustomMatrix {
 
-class Matrix : public MatrixFactory {
+class Matrix : public IMatrix {
 
 public:
     Matrix(int rows, int cols, bool is_random = true);
@@ -20,11 +22,11 @@ public:
 
     typedef std::map<eMatrixType, std::string> MatrixType;
 
-    Matrix* operator+(const Matrix& m) override;
-    Matrix* operator-(const Matrix& m) override;
-    Matrix* operator*(const Matrix& m) override;
-    Matrix* operator/(const Matrix& m) override;
-    Matrix* operator=(const Matrix& m) override;
+    IMatrix* operator+(const IMatrix& m) override;
+    IMatrix* operator-(const IMatrix& m) override;
+    IMatrix* operator*(const IMatrix& m) override;
+    IMatrix* operator/(const IMatrix& m) override;
+    IMatrix* operator=(const IMatrix& m) override;
 //    int operator()(int row, int col);
 
     float* get_regular_matrix() const override;

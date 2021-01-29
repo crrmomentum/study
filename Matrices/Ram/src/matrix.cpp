@@ -187,7 +187,7 @@ int Matrix::get_rows() const {
     return _rows;
 }
 
-Matrix* Matrix::operator+(const Matrix& m) {
+IMatrix* Matrix::operator+(const IMatrix& m) {
 
     if (m.get_cols() != _cols || m.get_rows() != _rows) {
         std::cout << "Cannot sum these matrices, number of cols or rows don't match" << std::endl;
@@ -205,7 +205,7 @@ Matrix* Matrix::operator+(const Matrix& m) {
     return c;
 }
 
-Matrix* Matrix::operator-(const Matrix& m) {
+IMatrix* Matrix::operator-(const IMatrix& m) {
     if (m.get_cols() != _cols || m.get_rows() != _rows) {
         std::cout << "Cannot substract these matrices, number of cols or rows don't match" << std::endl;
         return NULL;
@@ -223,7 +223,7 @@ Matrix* Matrix::operator-(const Matrix& m) {
     return c;
 }
 
-Matrix* Matrix::operator*(const Matrix& m) {
+IMatrix* Matrix::operator*(const IMatrix& m) {
     if (this->_cols != m.get_rows()) {
         std::cout << "Cannot multiply these matrices" << std::endl;
         return NULL;
@@ -264,7 +264,7 @@ float* Matrix::get_product(float* b, int bcols) {
     return matrix;
 }
 
-Matrix* Matrix::operator/(const Matrix& m) {
+IMatrix* Matrix::operator/(const IMatrix& m) {
     // If B is inverstible C = A/B  ->   C = A*inv(B)
     if (calc_determinant(m.get_regular_matrix(), m.get_cols()) == 0) {
         std::cout << "B is not invertible, A/B does not exist" << std::endl;
@@ -311,7 +311,7 @@ void Matrix::print(Matrix::eMatrixType type) const {
     std::cout << "\n\n";
 }
 
-Matrix* Matrix::operator=(const Matrix& m) {
+IMatrix* Matrix::operator=(const IMatrix& m) {
     if (this != &m) {   // avoid self assignment
 
     }

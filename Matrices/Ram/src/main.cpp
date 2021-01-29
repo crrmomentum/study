@@ -1,22 +1,25 @@
 #include <iostream>
 #include "matrix_factory.h"
 
+using namespace CustomMatrix;
+
 int main() {
     std::cout << "Program testing matrices operations" << "\n";
-#if 0
     // SUM
     {
         std::cout << "************************** SUM **********************" << "\n";
-        int arr[9] = {-3,2,-5,-1,0,-2,3,-4,1};
-        Matrix a(3, 3, &arr[0]);
-        a.print(Matrix::REGULAR);
-        a.print(Matrix::TRANSPOSE);
-        Matrix b(3, 3, true);
-        b.print(Matrix::REGULAR);
-        Matrix* c = a + b;
-        c->print(Matrix::REGULAR);
+        float arr[9] = {-3,2,-5,-1,0,-2,3,-4,1};
+        //Matrix a(3, 3, &arr[0]);
+        // Get Matrix factory
+        IMatrix* a = MatrixFactory::create_matrix(3, 3, &arr[0]);
+        a->print(IMatrix::REGULAR);
+        a->print(IMatrix::TRANSPOSE);
+        IMatrix* b = MatrixFactory::create_matrix(3, 3);
+        b->print(IMatrix::REGULAR);
+//        IMatrix* c = a + b;
+//        c->print(IMatrix::REGULAR);
     }
-
+#if 0
     // SUBS
     {
         std::cout << "\n\n************************** SUBS **********************" << "\n";
