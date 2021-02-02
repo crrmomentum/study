@@ -3,13 +3,13 @@
 
 namespace CustomMatrix {
 
-IMatrix* MatrixFactory::create_matrix(int rows, int cols, float* matrix) {
-    Matrix* m = nullptr;
+std::shared_ptr<IMatrix> MatrixFactory::create_matrix(int rows, int cols, float* matrix) {
+    std::shared_ptr<IMatrix> m = nullptr;
     if (matrix) {
-        m = new Matrix(rows, cols, matrix);
+        m = std::make_shared<Matrix>(rows, cols, matrix);
     }
     else {
-        m = new Matrix(rows, cols, true);
+        m = std::make_shared<Matrix>(rows, cols, true);
     }
     return m;
 }

@@ -8,7 +8,7 @@ namespace CustomMatrix {
 class MatrixFactory {
 
 public:
-    static IMatrix* create_matrix(int rows, int cols, float* matrix = nullptr);
+    static std::shared_ptr<IMatrix> create_matrix(int rows, int cols, float* matrix = nullptr);
 
 
 private:

@@ -1,6 +1,8 @@
 #ifndef IMATRIX_H
 #define IMATRIX_H
 
+#include <memory>
+
 namespace CustomMatrix {
 
 class IMatrix {
@@ -15,11 +17,13 @@ public:
         INVERSE
     } eMatrixType;
 
-    virtual IMatrix* operator+(const IMatrix& m) = 0;
-    virtual IMatrix* operator-(const IMatrix& m) = 0;
-    virtual IMatrix* operator*(const IMatrix& m) = 0;
-    virtual IMatrix* operator/(const IMatrix& m) = 0;
-    virtual IMatrix* operator=(const IMatrix& m) = 0;
+//    typedef std::shared_ptr<IMatrix> MatrixPtr;
+
+    virtual std::shared_ptr<IMatrix> add(const std::shared_ptr<IMatrix>& m) = 0;
+    virtual std::shared_ptr<IMatrix> substract(const std::shared_ptr<IMatrix>& m) = 0;
+    virtual std::shared_ptr<IMatrix> multiply(const std::shared_ptr<IMatrix>& m) = 0;
+    virtual std::shared_ptr<IMatrix> divide(const std::shared_ptr<IMatrix>& m) = 0;
+//    virtual std::shared_ptr<IMatrix> operator=(const std::shared_ptr<IMatrix>& m) = 0;
 //    int operator()(int row, int col);
 
     virtual float* get_regular_matrix() const = 0;

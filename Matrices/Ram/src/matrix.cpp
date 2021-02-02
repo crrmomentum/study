@@ -40,11 +40,11 @@ Matrix::Matrix(const Matrix& m) {
 }
 
 Matrix::~Matrix() {
-    delete[] _matrix;
-    delete[] _matrix_transpose;
-    delete[] _matrix_adj;
-    delete[] _matrix_inv;
-    delete[] _matrix_cofactor;
+//    delete[] _matrix;
+//    delete[] _matrix_transpose;
+//    delete[] _matrix_adj;
+//    delete[] _matrix_inv;
+//    delete[] _matrix_cofactor;
 }
 
 void Matrix::init_matrix() {
@@ -187,50 +187,50 @@ int Matrix::get_rows() const {
     return _rows;
 }
 
-IMatrix* Matrix::operator+(const IMatrix& m) {
+std::shared_ptr<IMatrix> Matrix::add(const std::shared_ptr<IMatrix>& m) {
 
-    if (m.get_cols() != _cols || m.get_rows() != _rows) {
+    if (m->get_cols() != _cols || m->get_rows() != _rows) {
         std::cout << "Cannot sum these matrices, number of cols or rows don't match" << std::endl;
         return NULL;
     }
-    float* matrix = new float[_rows*m.get_cols()];
+    float* matrix = new float[_rows*m->get_cols()];
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A + B
-        matrix[i] = _matrix[i] + m.get_regular_matrix()[i];
+        matrix[i] = _matrix[i] + m->get_regular_matrix()[i];
     }
 
-    Matrix* c = new Matrix(_rows, _cols, matrix);
+    std::shared_ptr<IMatrix> c = std::make_shared<Matrix>(_rows, _cols, matrix);
 
     return c;
 }
 
-IMatrix* Matrix::operator-(const IMatrix& m) {
-    if (m.get_cols() != _cols || m.get_rows() != _rows) {
+std::shared_ptr<IMatrix> Matrix::substract(const std::shared_ptr<IMatrix>& m) {
+    if (m->get_cols() != _cols || m->get_rows() != _rows) {
         std::cout << "Cannot substract these matrices, number of cols or rows don't match" << std::endl;
         return NULL;
     }
 
-    float* matrix = new float[_rows*m.get_cols()];
+    float* matrix = new float[_rows*m->get_cols()];
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A - B
-        matrix[i] = _matrix[i] - m.get_regular_matrix()[i];
+        matrix[i] = _matrix[i] - m->get_regular_matrix()[i];
     }
 
-    Matrix* c = new Matrix(_rows, _cols, matrix);
+    std::shared_ptr<IMatrix> c = std::make_shared<Matrix>(_rows, _cols, matrix);
 
     return c;
 }
 
-IMatrix* Matrix::operator*(const IMatrix& m) {
-    if (this->_cols != m.get_rows()) {
+std::shared_ptr<IMatrix> Matrix::multiply(const std::shared_ptr<IMatrix>& m) {
+    if (this->_cols != m->get_rows()) {
         std::cout << "Cannot multiply these matrices" << std::endl;
         return NULL;
     }
 
-    float* matrix = get_product(m.get_regular_matrix(), m.get_cols());
-    Matrix* c = new Matrix(_rows, m.get_cols(), matrix);
+    float* matrix = get_product(m->get_regular_matrix(), m->get_cols());
+    std::shared_ptr<IMatrix> c = std::make_shared<Matrix>(_rows, m->get_cols(), matrix);
 
     return c;
 }
@@ -264,16 +264,16 @@ float* Matrix::get_product(float* b, int bcols) {
     return matrix;
 }
 
-IMatrix* Matrix::operator/(const IMatrix& m) {
+std::shared_ptr<IMatrix> Matrix::divide(const std::shared_ptr<IMatrix>& m) {
     // If B is inverstible C = A/B  ->   C = A*inv(B)
-    if (calc_determinant(m.get_regular_matrix(), m.get_cols()) == 0) {
+    if (calc_determinant(m->get_regular_matrix(), m->get_cols()) == 0) {
         std::cout << "B is not invertible, A/B does not exist" << std::endl;
         return NULL;
     }
 
-    float* matrix = get_product(m.get_inverse_matrix(), m.get_cols());
+    float* matrix = get_product(m->get_inverse_matrix(), m->get_cols());
 
-    Matrix* c = new Matrix(m.get_rows(), m.get_cols(), matrix);
+    std::shared_ptr<IMatrix> c = std::make_shared<Matrix>(m->get_rows(), m->get_cols(), matrix);
 
     return c;
 }
@@ -311,12 +311,9 @@ void Matrix::print(Matrix::eMatrixType type) const {
     std::cout << "\n\n";
 }
 
-IMatrix* Matrix::operator=(const IMatrix& m) {
-    if (this != &m) {   // avoid self assignment
-
-    }
-    return NULL;
-}
+//std::shared_ptr<IMatrix> Matrix::operator=(const std::shared_ptr<IMatrix>& m) {
+//    return NULL;
+//}
 
 //int Matrix::operator()(int row, int col) {
 //    return 0;
