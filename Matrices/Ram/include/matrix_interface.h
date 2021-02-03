@@ -8,6 +8,8 @@ namespace CustomMatrix {
 class IMatrix {
 
 public:
+    virtual ~IMatrix() {}
+
     // Typedefs
     typedef enum {
         REGULAR = 0,

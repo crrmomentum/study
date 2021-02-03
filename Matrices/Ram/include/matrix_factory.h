@@ -8,12 +8,14 @@ namespace CustomMatrix {
 class MatrixFactory {
 
 public:
-    static std::shared_ptr<IMatrix> create_matrix(int rows, int cols, float* matrix = nullptr);
-
+    static MatrixFactory& getInstance();
+    std::shared_ptr<IMatrix> create_matrix(int rows, int cols, float* matrix = nullptr);
 
 private:
-    //MatrixFactory();
-    //virtual ~MatrixFactory();
+    MatrixFactory();
+    ~MatrixFactory();
+    MatrixFactory(const MatrixFactory&) = delete;
+    MatrixFactory operator=(const MatrixFactory&) = delete;
 };
 
 }
