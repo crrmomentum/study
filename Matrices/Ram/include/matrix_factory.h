@@ -9,7 +9,7 @@ class MatrixFactory {
 
 public:
     static MatrixFactory& getInstance();
-    std::shared_ptr<IMatrix> create_matrix(int rows, int cols, float* matrix = nullptr);
+    IMatrixPtr create_matrix(int rows, int cols, float* matrix = nullptr);
 
 private:
     MatrixFactory();

@@ -21,7 +21,8 @@ Matrix::Matrix(int rows, int cols, bool is_random) {
 Matrix::Matrix(int rows, int cols, float* matrix) {
     _rows = rows;
     _cols = cols;
-    _matrix = matrix;
+    _matrix = allocate_empty_matrix();
+    memcpy(_matrix, matrix, rows*cols*sizeof(matrix[0]));
     // Calculate internal values  like determinant, transpose, adj
     init_matrix();
 }
@@ -33,18 +34,19 @@ Matrix::Matrix(const Matrix& m) {
     _cols = m._cols;
     _rows = m._rows;
     _matrix = allocate_empty_matrix();
-    memcpy(_matrix, m._matrix, _cols*_rows*sizeof(m._matrix[0]));
+    memcpy(_matrix, m._matrix, _rows*_cols*sizeof(m._matrix[0]));
     std::cout << "_matrix addr is: " << _matrix << std::endl;
     std::cout << "m._matrix addr is: " << m._matrix << std::endl;
     init_matrix();
 }
 
 Matrix::~Matrix() {
-//    delete[] _matrix;
-//    delete[] _matrix_transpose;
-//    delete[] _matrix_adj;
-//    delete[] _matrix_inv;
-//    delete[] _matrix_cofactor;
+    std::cout << "Calling ~IMatrix()" << std::endl;
+    delete[] _matrix;
+    delete[] _matrix_transpose;
+    delete[] _matrix_adj;
+    delete[] _matrix_inv;
+    delete[] _matrix_cofactor;
 }
 
 void Matrix::init_matrix() {
@@ -187,7 +189,7 @@ int Matrix::get_rows() const {
     return _rows;
 }
 
-std::shared_ptr<IMatrix> Matrix::add(const std::shared_ptr<IMatrix>& m) {
+IMatrixPtr Matrix::add(const IMatrixPtr& m) {
 
     if (m->get_cols() != _cols || m->get_rows() != _rows) {
         std::cout << "Cannot sum these matrices, number of cols or rows don't match" << std::endl;
@@ -200,12 +202,12 @@ std::shared_ptr<IMatrix> Matrix::add(const std::shared_ptr<IMatrix>& m) {
         matrix[i] = _matrix[i] + m->get_regular_matrix()[i];
     }
 
-    std::shared_ptr<IMatrix> c = std::make_shared<Matrix>(_rows, _cols, matrix);
+    IMatrixPtr c = std::make_shared<Matrix>(_rows, _cols, matrix);
 
     return c;
 }
 
-std::shared_ptr<IMatrix> Matrix::substract(const std::shared_ptr<IMatrix>& m) {
+IMatrixPtr Matrix::substract(const IMatrixPtr& m) {
     if (m->get_cols() != _cols || m->get_rows() != _rows) {
         std::cout << "Cannot substract these matrices, number of cols or rows don't match" << std::endl;
         return NULL;
@@ -218,19 +220,19 @@ std::shared_ptr<IMatrix> Matrix::substract(const std::shared_ptr<IMatrix>& m) {
         matrix[i] = _matrix[i] - m->get_regular_matrix()[i];
     }
 
-    std::shared_ptr<IMatrix> c = std::make_shared<Matrix>(_rows, _cols, matrix);
+    IMatrixPtr c = std::make_shared<Matrix>(_rows, _cols, matrix);
 
     return c;
 }
 
-std::shared_ptr<IMatrix> Matrix::multiply(const std::shared_ptr<IMatrix>& m) {
+IMatrixPtr Matrix::multiply(const IMatrixPtr& m) {
     if (this->_cols != m->get_rows()) {
         std::cout << "Cannot multiply these matrices" << std::endl;
         return NULL;
     }
 
     float* matrix = get_product(m->get_regular_matrix(), m->get_cols());
-    std::shared_ptr<IMatrix> c = std::make_shared<Matrix>(_rows, m->get_cols(), matrix);
+    IMatrixPtr c = std::make_shared<Matrix>(_rows, m->get_cols(), matrix);
 
     return c;
 }
@@ -264,7 +266,7 @@ float* Matrix::get_product(float* b, int bcols) {
     return matrix;
 }
 
-std::shared_ptr<IMatrix> Matrix::divide(const std::shared_ptr<IMatrix>& m) {
+IMatrixPtr Matrix::divide(const IMatrixPtr& m) {
     // If B is inverstible C = A/B  ->   C = A*inv(B)
     if (calc_determinant(m->get_regular_matrix(), m->get_cols()) == 0) {
         std::cout << "B is not invertible, A/B does not exist" << std::endl;
@@ -273,7 +275,7 @@ std::shared_ptr<IMatrix> Matrix::divide(const std::shared_ptr<IMatrix>& m) {
 
     float* matrix = get_product(m->get_inverse_matrix(), m->get_cols());
 
-    std::shared_ptr<IMatrix> c = std::make_shared<Matrix>(m->get_rows(), m->get_cols(), matrix);
+    IMatrixPtr c = std::make_shared<Matrix>(m->get_rows(), m->get_cols(), matrix);
 
     return c;
 }
@@ -311,7 +313,7 @@ void Matrix::print(Matrix::eMatrixType type) const {
     std::cout << "\n\n";
 }
 
-//std::shared_ptr<IMatrix> Matrix::operator=(const std::shared_ptr<IMatrix>& m) {
+//IMatrixPtr Matrix::operator=(const IMatrixPtr& m) {
 //    return NULL;
 //}
 

@@ -5,6 +5,9 @@
 
 namespace CustomMatrix {
 
+class IMatrix;
+typedef std::shared_ptr<IMatrix> IMatrixPtr;
+
 class IMatrix {
 
 public:
@@ -19,12 +22,12 @@ public:
         INVERSE
     } eMatrixType;
 
-//    typedef std::shared_ptr<IMatrix> MatrixPtr;
 
-    virtual std::shared_ptr<IMatrix> add(const std::shared_ptr<IMatrix>& m) = 0;
-    virtual std::shared_ptr<IMatrix> substract(const std::shared_ptr<IMatrix>& m) = 0;
-    virtual std::shared_ptr<IMatrix> multiply(const std::shared_ptr<IMatrix>& m) = 0;
-    virtual std::shared_ptr<IMatrix> divide(const std::shared_ptr<IMatrix>& m) = 0;
+
+    virtual IMatrixPtr add(const IMatrixPtr& m) = 0;
+    virtual IMatrixPtr substract(const IMatrixPtr& m) = 0;
+    virtual IMatrixPtr multiply(const IMatrixPtr& m) = 0;
+    virtual IMatrixPtr divide(const IMatrixPtr& m) = 0;
 //    virtual std::shared_ptr<IMatrix> operator=(const std::shared_ptr<IMatrix>& m) = 0;
 //    int operator()(int row, int col);
 

@@ -17,8 +17,8 @@ MatrixFactory& MatrixFactory::getInstance() {
     return factory;
 }
 
-std::shared_ptr<IMatrix> MatrixFactory::create_matrix(int rows, int cols, float* matrix) {
-    std::shared_ptr<IMatrix> m = nullptr;
+IMatrixPtr MatrixFactory::create_matrix(int rows, int cols, float* matrix) {
+    IMatrixPtr m = nullptr;
     if (matrix) {
         m = std::make_shared<Matrix>(rows, cols, matrix);
     }

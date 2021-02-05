@@ -12,7 +12,6 @@ project ($PROJECT)
 # Set include directories
 include_directories(
         ${PROJECT_SOURCE_DIR}/include
-        ${PROJECT_SOURCE_DIR}/src
 )
 
 # Set source files

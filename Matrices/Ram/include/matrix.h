@@ -21,12 +21,11 @@ public:
     ~Matrix();
 
     typedef std::map<eMatrixType, std::string> MatrixType;
-    //typedef std::shared_ptr<IMatrix> MatrixPtr;
 
-    std::shared_ptr<IMatrix> add(const std::shared_ptr<IMatrix>& m) override;
-    std::shared_ptr<IMatrix> substract(const std::shared_ptr<IMatrix>& m) override;
-    std::shared_ptr<IMatrix> multiply(const std::shared_ptr<IMatrix>& m) override;
-    std::shared_ptr<IMatrix> divide(const std::shared_ptr<IMatrix>& m) override;
+    IMatrixPtr add(const IMatrixPtr& m) override;
+    IMatrixPtr substract(const IMatrixPtr& m) override;
+    IMatrixPtr multiply(const IMatrixPtr& m) override;
+    IMatrixPtr divide(const IMatrixPtr& m) override;
 //    std::shared_ptr<IMatrix> operator=(const std::shared_ptr<IMatrix>& m) override;
 //    int operator()(int row, int col);
 
@@ -48,7 +47,6 @@ private:
     float* transpose(float* matrix);
     float* get_submatrix(float* matrix, int pos, int cols);
     float* get_product(float* b, int cols);
-
 
     float* _matrix;
     float* _matrix_transpose;
