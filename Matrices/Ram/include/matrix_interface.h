@@ -22,17 +22,21 @@ public:
         INVERSE
     } eMatrixType;
 
-
+    typedef enum {
+        ROT_90 = 0,
+        ROT_180,
+        ROT_270
+    } eRotate;
 
     virtual IMatrixPtr add(const IMatrixPtr& m) = 0;
     virtual IMatrixPtr substract(const IMatrixPtr& m) = 0;
     virtual IMatrixPtr multiply(const IMatrixPtr& m) = 0;
     virtual IMatrixPtr divide(const IMatrixPtr& m) = 0;
-//    virtual std::shared_ptr<IMatrix> operator=(const std::shared_ptr<IMatrix>& m) = 0;
+//    virtual IMatrixPtr rotate(eRotate rotation) = 0;
+//    virtual IMatrixPtr operator=(const IMatrixPtr& m) = 0;
 //    int operator()(int row, int col);
 
-    virtual float* get_regular_matrix() const = 0;
-    virtual float* get_inverse_matrix() const = 0;
+    virtual float* get_raw_matrix(eMatrixType type) const = 0;
     virtual float get_determinant() const = 0;
     virtual int get_cols() const = 0;
     virtual int get_rows() const = 0;

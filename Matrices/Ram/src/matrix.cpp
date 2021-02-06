@@ -173,12 +173,27 @@ void Matrix::calc_inverse() {
     }
 }
 
-float* Matrix::get_regular_matrix() const {
-    return _matrix;
-}
+float* Matrix::get_raw_matrix(eMatrixType type) const {
+    float* pMatrix = NULL;
+    std::string str;
+    switch (type) {
+        case REGULAR: 
+             return _matrix;
+        case TRANSPOSE: 
+             return _matrix_transpose;
+        case COFACTOR: 
+             return _matrix_cofactor;
+        case ADJ:
+             return _matrix_adj;
+        case INVERSE: 
+             return _matrix_inv;
+        default: {
+            std::cout << "type " << type << " is not valid";
+            return NULL;
+        }
+    }
 
-float* Matrix::get_inverse_matrix() const {
-    return _matrix_inv;
+    return pMatrix;
 }
 
 int Matrix::get_cols() const {
@@ -199,7 +214,7 @@ IMatrixPtr Matrix::add(const IMatrixPtr& m) {
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A + B
-        matrix[i] = _matrix[i] + m->get_regular_matrix()[i];
+        matrix[i] = _matrix[i] + m->get_raw_matrix(REGULAR)[i];
     }
 
     IMatrixPtr c = std::make_shared<Matrix>(_rows, _cols, matrix);
@@ -217,7 +232,7 @@ IMatrixPtr Matrix::substract(const IMatrixPtr& m) {
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A - B
-        matrix[i] = _matrix[i] - m->get_regular_matrix()[i];
+        matrix[i] = _matrix[i] - m->get_raw_matrix(REGULAR)[i];
     }
 
     IMatrixPtr c = std::make_shared<Matrix>(_rows, _cols, matrix);
@@ -231,7 +246,7 @@ IMatrixPtr Matrix::multiply(const IMatrixPtr& m) {
         return NULL;
     }
 
-    float* matrix = get_product(m->get_regular_matrix(), m->get_cols());
+    float* matrix = get_product(m->get_raw_matrix(REGULAR), m->get_cols());
     IMatrixPtr c = std::make_shared<Matrix>(_rows, m->get_cols(), matrix);
 
     return c;
@@ -268,12 +283,12 @@ float* Matrix::get_product(float* b, int bcols) {
 
 IMatrixPtr Matrix::divide(const IMatrixPtr& m) {
     // If B is inverstible C = A/B  ->   C = A*inv(B)
-    if (calc_determinant(m->get_regular_matrix(), m->get_cols()) == 0) {
+    if (calc_determinant(m->get_raw_matrix(REGULAR), m->get_cols()) == 0) {
         std::cout << "B is not invertible, A/B does not exist" << std::endl;
         return NULL;
     }
 
-    float* matrix = get_product(m->get_inverse_matrix(), m->get_cols());
+    float* matrix = get_product(m->get_raw_matrix(INVERSE), m->get_cols());
 
     IMatrixPtr c = std::make_shared<Matrix>(m->get_rows(), m->get_cols(), matrix);
 

@@ -26,11 +26,10 @@ public:
     IMatrixPtr substract(const IMatrixPtr& m) override;
     IMatrixPtr multiply(const IMatrixPtr& m) override;
     IMatrixPtr divide(const IMatrixPtr& m) override;
-//    std::shared_ptr<IMatrix> operator=(const std::shared_ptr<IMatrix>& m) override;
+//    IMatrixPtr operator=(const IMatrixPtr& m) override;
 //    int operator()(int row, int col);
 
-    float* get_regular_matrix() const override;
-    float* get_inverse_matrix() const override;
+    float* get_raw_matrix(eMatrixType type) const override;
     float get_determinant() const override;
     int get_cols() const override;
     int get_rows() const override;
