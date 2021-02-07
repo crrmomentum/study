@@ -1,0 +1,74 @@
+[33mcommit e3f87e7575f0402eaebfafb10f3e09a98816b745[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: Carlos <72846436+juancanudo@users.noreply.github.com>
+Date:   Sun Jan 24 22:57:39 2021 -0600
+
+    Initial commit - Estructura principal menu
+
+[33mcommit b9aab2c2dd981c9b605f7eccd1bb0cb5789c4c29[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mtopic/matrix_juanca[m[33m)[m
+Author: Mario Ramirez <ramsesrago@gmail.com>
+Date:   Mon Dec 28 23:53:09 2020 -0600
+
+    Added cmake to generate Makefile
+
+[33mcommit 1603baec33db0033cae703bf305117b771b3c6ba[m
+Author: Mario Ramirez <ramsesrago@gmail.com>
+Date:   Wed Dec 23 22:59:59 2020 -0600
+
+    Small changes after review with JC:
+    - Added stop flag for consumer only so that we can stop the consumer only after the producer has finished its execution
+
+[33mcommit 44433e9e5c7e12bee9bf16dbc415757ac787033b[m
+Author: Ramses Ramirez <ramsesrago@gmail.com>
+Date:   Sun Dec 20 14:06:06 2020 -0600
+
+    Fixed bug where the queue was not getting drained when the "Stop thread"
+    was getting called in the middle of execution of producer thread
+
+[33mcommit 7eafae4154049a622069f95222f1869d8e2a86d0[m
+Author: Mario Ramirez <ramsesrago@gmail.com>
+Date:   Wed Dec 16 22:03:36 2020 -0600
+
+    Added a new mutex for synchronization between consumer and producer
+    ** we have a bug, sometimes the producer produces one more item after the stop flag has been set
+
+[33mcommit 081d6fcd449dad2522fb6b1feffda701cbc05850[m
+Author: Mario Ramirez <ramsesrago@gmail.com>
+Date:   Wed Dec 16 18:23:06 2020 -0600
+
+    Added semaphores to synchronize producer and consumer
+
+[33mcommit 1d0e2a43a53d01ad1b017624baeedd30ca414fae[m
+Author: Mario Ramirez <ramsesrago@gmail.com>
+Date:   Wed Dec 9 21:14:18 2020 -0600
+
+    Second version of threads, created a queue to illustrate consumer-producer problem
+
+[33mcommit 1538141e372704010b9c0336978f3d84b9966080[m
+Author: Juan Nuno <juan.carlos.nuno@outlook.com>
+Date:   Wed Dec 2 22:02:54 2020 -0600
+
+    First version for Multithreading
+
+[33mcommit 58d3034fe35e5d2f3ba5fd142f0c393f3cd590d7[m
+Author: Mario Ramirez <ramsesrago@gmail.com>
+Date:   Tue Nov 10 22:16:17 2020 -0500
+
+    Adding RPi folder and sample code to get temperature and humidity using a DHT22 sensor and the Circuit Python library from Adafruit
+
+[33mcommit 74d2c0b39c84efb44128f4ad0fbb647bea9e4bbc[m
+Author: Flores Carrasco <rodrigo.flores.carrasco@intel.com>
+Date:   Fri Nov 6 13:58:28 2020 -0600
+
+    First class template
+
+[33mcommit a120f737d932fbd57e5d18d7a918a8677111f343[m
+Author: Juan Nuno <juan.carlos.nuno@outlook.com>
+Date:   Wed Oct 14 20:05:10 2020 -0500
+
+    added second world
+
+[33mcommit 7b5523b28d69949f0a1e4d86414ae3f7b413f706[m
+Author: Rodrigo Flores <rodrigofc.personal@outlook.com>
+Date:   Wed Oct 14 19:33:29 2020 -0500
+
+    Hello world commit
