@@ -328,12 +328,12 @@ void Matrix::print(Matrix::eMatrixType type) const {
     std::cout << "\n\n";
 }
 
-//IMatrixPtr Matrix::operator=(const IMatrixPtr& m) {
-//    return NULL;
-//}
+IMatrixPtr Matrix::rotate(eRotate rotation) {
+    return NULL;
+}
 
-//int Matrix::operator()(int row, int col) {
-//    return 0;
-//}
+float Matrix::operator()(int row, int col) {
+    return 0.0f;
+}
 
 }

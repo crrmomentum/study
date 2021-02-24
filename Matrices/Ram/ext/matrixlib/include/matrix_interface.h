@@ -32,15 +32,17 @@ public:
     virtual IMatrixPtr substract(const IMatrixPtr& m) = 0;
     virtual IMatrixPtr multiply(const IMatrixPtr& m) = 0;
     virtual IMatrixPtr divide(const IMatrixPtr& m) = 0;
-//    virtual IMatrixPtr rotate(eRotate rotation) = 0;
-//    virtual IMatrixPtr operator=(const IMatrixPtr& m) = 0;
-//    int operator()(int row, int col);
+    virtual IMatrixPtr rotate(eRotate rotation) = 0;
 
+    virtual float operator()(int row, int col) = 0;
     virtual float* get_raw_matrix(eMatrixType type) const = 0;
     virtual float get_determinant() const = 0;
     virtual int get_cols() const = 0;
     virtual int get_rows() const = 0;
     virtual void print(eMatrixType type) const = 0;
+
+private:
+    IMatrixPtr operator=(const IMatrixPtr& m) = delete;
 };
 
 }

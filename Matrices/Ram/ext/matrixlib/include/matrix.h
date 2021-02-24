@@ -26,9 +26,9 @@ public:
     IMatrixPtr substract(const IMatrixPtr& m) override;
     IMatrixPtr multiply(const IMatrixPtr& m) override;
     IMatrixPtr divide(const IMatrixPtr& m) override;
-//    IMatrixPtr operator=(const IMatrixPtr& m) override;
-//    int operator()(int row, int col);
+    IMatrixPtr rotate(eRotate rotation) override;
 
+    float operator()(int row, int col) override;
     float* get_raw_matrix(eMatrixType type) const override;
     float get_determinant() const override;
     int get_cols() const override;
@@ -56,7 +56,6 @@ private:
     int _rows;
     int _cols;
 
-    //MatrixTypePtr matrixTypePtr;
     MatrixType matrixType;
 };
 
