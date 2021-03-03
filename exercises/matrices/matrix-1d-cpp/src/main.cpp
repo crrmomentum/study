@@ -64,5 +64,19 @@ int main() {
         }
     }
 
+    // Testing () operator
+    {
+        IMatrixPtr a = matrixFactory.create_matrix(3, 3);
+        a->print(IMatrix::REGULAR);
+        std::cout << "\nGetting matrix values through operator()" << "\n";
+        for (int i =0; i < a->get_rows(); ++i) {
+            for (int j = 0; j < a->get_cols(); ++j)
+            {
+                std::cout << (*a)(i,j) << "\t";
+            }
+            std::cout << "\n";
+        }
+    }
+
 }
 

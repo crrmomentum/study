@@ -173,7 +173,7 @@ void Matrix::calc_inverse() {
     }
 }
 
-float* Matrix::get_raw_matrix(eMatrixType type) const {
+float* Matrix::get_1d_raw_matrix(eMatrixType type) const {
     float* pMatrix = NULL;
     std::string str;
     switch (type) {
@@ -196,6 +196,11 @@ float* Matrix::get_raw_matrix(eMatrixType type) const {
     return pMatrix;
 }
 
+float** Matrix::get_2d_raw_matrix(eMatrixType type) const {
+    (void) type;
+    return NULL;
+}
+
 int Matrix::get_cols() const {
     return _cols;
 }
@@ -214,7 +219,7 @@ IMatrixPtr Matrix::add(const IMatrixPtr& m) {
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A + B
-        matrix[i] = _matrix[i] + m->get_raw_matrix(REGULAR)[i];
+        matrix[i] = _matrix[i] + m->get_1d_raw_matrix(REGULAR)[i];
     }
 
     IMatrixPtr c = std::make_shared<Matrix>(_rows, _cols, matrix);
@@ -232,7 +237,7 @@ IMatrixPtr Matrix::substract(const IMatrixPtr& m) {
 
     for (int i = 0; i < _rows*_cols; ++i) {
         // C = A - B
-        matrix[i] = _matrix[i] - m->get_raw_matrix(REGULAR)[i];
+        matrix[i] = _matrix[i] - m->get_1d_raw_matrix(REGULAR)[i];
     }
 
     IMatrixPtr c = std::make_shared<Matrix>(_rows, _cols, matrix);
@@ -246,7 +251,7 @@ IMatrixPtr Matrix::multiply(const IMatrixPtr& m) {
         return NULL;
     }
 
-    float* matrix = get_product(m->get_raw_matrix(REGULAR), m->get_cols());
+    float* matrix = get_product(m->get_1d_raw_matrix(REGULAR), m->get_cols());
     IMatrixPtr c = std::make_shared<Matrix>(_rows, m->get_cols(), matrix);
 
     return c;
@@ -283,12 +288,12 @@ float* Matrix::get_product(float* b, int bcols) {
 
 IMatrixPtr Matrix::divide(const IMatrixPtr& m) {
     // If B is inverstible C = A/B  ->   C = A*inv(B)
-    if (calc_determinant(m->get_raw_matrix(REGULAR), m->get_cols()) == 0) {
+    if (calc_determinant(m->get_1d_raw_matrix(REGULAR), m->get_cols()) == 0) {
         std::cout << "B is not invertible, A/B does not exist" << std::endl;
         return NULL;
     }
 
-    float* matrix = get_product(m->get_raw_matrix(INVERSE), m->get_cols());
+    float* matrix = get_product(m->get_1d_raw_matrix(INVERSE), m->get_cols());
 
     IMatrixPtr c = std::make_shared<Matrix>(m->get_rows(), m->get_cols(), matrix);
 
@@ -323,7 +328,7 @@ void Matrix::print(Matrix::eMatrixType type) const {
     std::cout << "------------- Printing " << str << " -------------" << "\n\n";
     for (int i = 0; i < _rows*_cols; ++i) {
         if (i > 0 && i%_cols == 0) std::cout << std::endl;
-        std::cout << pMatrix[i] << "   ";
+        std::cout << pMatrix[i] << "\t";
     }
     std::cout << "\n\n";
 }
@@ -333,7 +338,8 @@ IMatrixPtr Matrix::rotate(eRotate rotation) {
 }
 
 float Matrix::operator()(int row, int col) {
-    return 0.0f;
+    int index = row*_cols + col;
+    return _matrix[index];
 }
 
 }

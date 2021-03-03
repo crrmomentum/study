@@ -29,7 +29,8 @@ public:
     IMatrixPtr rotate(eRotate rotation) override;
 
     float operator()(int row, int col) override;
-    float* get_raw_matrix(eMatrixType type) const override;
+    float* get_1d_raw_matrix(eMatrixType type) const override;
+    float** get_2d_raw_matrix(eMatrixType type) const override;
     float get_determinant() const override;
     int get_cols() const override;
     int get_rows() const override;
