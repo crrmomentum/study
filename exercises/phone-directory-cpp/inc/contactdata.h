@@ -1,6 +1,9 @@
 
 #include <iostream>
+<<<<<<< HEAD:exercises/phone-directory-cpp/inc/contactdata.h
 //#include <string>
+=======
+>>>>>>> 1e31bae3dd15ddaf8de2f36dad9a6d0b457db569:exercises/phone-directory-cpp/header/contactdata.h
 
 class ContactData{
 
