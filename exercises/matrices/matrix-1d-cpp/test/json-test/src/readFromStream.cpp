@@ -1,30 +1,21 @@
-#include "json/json.h"
+#include <json/json.h>
 #include <fstream>
 #include <iostream>
-/** \brief Parse from stream, collect comments and capture error info.
- * Example Usage:
- * $g++ readFromStream.cpp -ljsoncpp -std=c++11 -o readFromStream
- * $./readFromStream
- * // comment head
- * {
- *    // comment before
- *    "key" : "value"
- * }
- * // comment after
- * // comment tail
- */
-int main(int argc, char* argv[]) {
-  Json::Value root;
-  std::ifstream ifs;
-  ifs.open(argv[1]);
 
-  Json::CharReaderBuilder builder;
-  builder["collectComments"] = true;
-  JSONCPP_STRING errs;
-  if (!parseFromStream(builder, ifs, &root, &errs)) {
-    std::cout << errs << std::endl;
-    return EXIT_FAILURE;
-  }
-  std::cout << root << std::endl;
-  return EXIT_SUCCESS;
+#define  GOLDEN_MODEL_JSON_PATH  "/media/ramsesrago/Shared/Development/study/exercises/matrices/matrix-1d-cpp/test/golden-model-py/golden_matrices.json"
+//#define  GOLDEN_MODEL_JSON_PATH  "/media/ramsesrago/Shared/Development/study/exercises/matrices/matrix-1d-cpp/test/golden-model-py/simple_file.json"
+
+int main() {
+    Json::Value jsonRoot;
+
+    // Read file and overwrite Json database
+    std::string filename (GOLDEN_MODEL_JSON_PATH);
+    std::ifstream config_doc(filename.c_str(), std::ifstream::binary);
+    //std::ifstream config_doc(filename.c_str());
+    config_doc >> jsonRoot;
+//    std::cout << jsonRoot["encoding"].asString() << std::endl;
+//    std::cout << jsonRoot["test"].asString() << std::endl;
+    std::cout << jsonRoot.toStyledString() << std::endl;
+
+    return EXIT_SUCCESS;
 }
