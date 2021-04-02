@@ -10,16 +10,14 @@ def get_determinant(m):
 
 
 def get_matrices(m, rows, cols):
-    matrix_transpose = m.transpose()
     if rows == cols:
-        det = get_determinant(m)
+        det = round(get_determinant(m), 4)
         if det != 0:
             print(det)
-            # matrix_cofactor = np.linalg.inv(m).T * det
-            matrix_cofactor = np.dot(np.linalg.inv(m).T, det)
+            matrix_cofactor = np.matrix.round(np.dot(np.linalg.inv(m).T, det), 4)
             matrix_adj = matrix_cofactor.transpose()
-            matrix_inv = np.linalg.inv(m)
-            result = {'TRANSPOSE': matrix_transpose.tolist(),
+            matrix_inv = np.matrix.round(np.linalg.inv(m), 4)
+            result = {'TRANSPOSE': m.transpose().tolist(),
                       'COFACTOR': matrix_cofactor.tolist(),
                       'ADJ': matrix_adj.tolist(),
                       'INV': matrix_inv.tolist(),
@@ -27,7 +25,7 @@ def get_matrices(m, rows, cols):
                       }
         else:
             print("Determinant is zero or does not exist")
-            result = {'TRANSPOSE': None,
+            result = {'TRANSPOSE': m.transpose().tolist(),
                       'COFACTOR': None,
                       'ADJ': None,
                       'INV': None,
@@ -35,13 +33,14 @@ def get_matrices(m, rows, cols):
                       }
     else:
         print("Input matrices are not square, determinant doesn't exist")
-        result = {'TRANSPOSE': None,
+        result = {'TRANSPOSE': m.transpose().tolist(),
                   'COFACTOR': None,
                   'ADJ': None,
                   'INV': None,
                   'DET': None
                   }
     return result
+
 
 # Init dictionary
 dictionary = {'input': {}}
@@ -81,11 +80,5 @@ for i in range(1, 5):
 print(json.dumps(dictionary, indent=4))
 
 # Open json file
-# json_file = open('golden_matrices.json', 'w+')
-# json_file.truncate()
-# json_file.close()
-# dictionary = json.load(json_file)
-# print(json.dumps(dictionary, indent=4))
-
-# with open('golden_matrices.json', 'w') as json_file:
-#    json.dump(dictionary, json_file, indent=4)
+with open('golden_matrices.json', 'w+') as json_file:
+    json.dump(dictionary, json_file, indent=4)
