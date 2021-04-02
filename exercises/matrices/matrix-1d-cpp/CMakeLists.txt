@@ -18,6 +18,7 @@ include_directories(
 set (SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
 add_subdirectory (ext/matrixlib)
+add_subdirectory (test/json-test)
 add_executable (${PROJECT} ${SOURCES})
 
 link_directories (${LIBRARY_OUTPUT_PATH})
