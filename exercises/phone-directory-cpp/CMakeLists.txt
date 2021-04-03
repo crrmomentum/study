@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 set (CMAKE_BUILD_TYPE Debug)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set (CMAKE_CXX_COMPILER "D:\\mingw\\bin\\mingw32-g++.exe")
+
 # General variables
 set (PROJECT miniphonedir)
 
@@ -11,7 +11,7 @@ project ($PROJECT)
 
 # Set include directories
 include_directories(
-        ${PROJECT_SOURCE_DIR}/header
+        ${PROJECT_SOURCE_DIR}/inc
 )
 
 # Set source files

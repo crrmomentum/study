@@ -1,5 +1,4 @@
-#include "../header/singleton.h"
-#include "../header/contactdata.h"
+#include "singleton.h"
 #include<iostream> 
 #include<map>
 
@@ -15,7 +14,7 @@ int main(void)
     std::string name, last_name,  email, phone_number;
  
     do { 
-
+        /*ToDo: Option variable needs to be set in test*/
         std::cout << "Phone Directory\n"; 
         std::cout << "Select an option:\n\n";
         std::cout << "1. New contact\n\n"; 
@@ -38,7 +37,9 @@ int main(void)
             std::cout << "Email:"; 
             std::cin >> email; 
             std::cout << "Phone Number:"; 
-            std::cin >> phone_number; 
+            std::cin >> phone_number;
+
+            /*ToDo: A unit test class should provide data to new node*/
             org.create_contact(name,last_name,email,phone_number);
             std::cout << "New contact saved successfully";
             
@@ -47,7 +48,6 @@ int main(void)
         case 2:
             system("clear");
             org.display_contacts();
-            
             break;
         
         case 3:
