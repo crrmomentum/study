@@ -1,7 +1,7 @@
 
-//#include <iostream>
-#include <string>
-class ContactData {
+#include <iostream>
+
+class ContactData{
 
 private:
     std::string _name;

@@ -14,7 +14,7 @@ public:
     /*Getting singleton instance*/
     static Singleton_Organizer& get_organizer();
 
-    void create_contact(std::string name, std::string last_name, std::string email, std::string phone_number);
+    void create_contact(const std::string& name, const std::string& last_name, const std::string& email, const std::string& phone_number);
 
     bool delete_contact(int id);
 

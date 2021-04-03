@@ -1,18 +1,19 @@
-#include "../header/singleton.h"
+#include "singleton.h"
 #include <iostream>
 
 
 Singleton_Organizer::Singleton_Organizer()
 {
-    std::cout << "Creating organizer" << std::endl;
+
 }
-    Singleton_Organizer& Singleton_Organizer::get_organizer() {
+
+Singleton_Organizer& Singleton_Organizer::get_organizer() {
     std::cout << "Getting organizer from singleton" << std::endl;
     static Singleton_Organizer org;
     return org;
 }
 
-void Singleton_Organizer::create_contact(std::string name, std::string last_name, std::string email, std::string phone_number) {
+void Singleton_Organizer::create_contact(const std::string& name, const std::string& last_name, const std::string& email, const std::string& phone_number) {
     ContactData* contact = new ContactData(name, last_name, email, phone_number);
     map[_id] = contact;
     ++_id;
