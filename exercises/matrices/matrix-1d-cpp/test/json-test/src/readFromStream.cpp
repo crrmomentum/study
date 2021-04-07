@@ -1,6 +1,7 @@
 #include <json/json.h>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 #define  GOLDEN_MODEL_JSON_PATH  "/media/ramsesrago/Shared/Development/study/exercises/matrices/matrix-1d-cpp/test/golden-model-py/golden_matrices.json"
 //#define  GOLDEN_MODEL_JSON_PATH  "/media/ramsesrago/Shared/Development/study/exercises/matrices/matrix-1d-cpp/test/golden-model-py/simple_file.json"
@@ -16,7 +17,7 @@ struct JsonMatrixWrapper {
         //sonRegularMatrix
         for(int i = 0, index = 0; i < _rows ; i++){
             for(int j = 0; j < _cols ; j++) {
-                json1DMatrix[index] = jsonMatrix[i][j].asDouble();
+                json1DMatrix[index] = jsonMatrix[i][j].asFloat();
                 ++index;
             }
         }
@@ -47,7 +48,7 @@ int main() {
     // Printing 2x2 json matrix
     std::cout << "Matrix: " << jsonRoot["input"]["A"]["2x2"]["matrix"].toStyledString() << std::endl;
     // Printing determinant value
-    std::cout << "Determinant: " << jsonRoot["input"]["A"]["2x2"]["ops"]["DET"].asInt() << std::endl;
+    std::cout << "Determinant: " << jsonRoot["input"]["A"]["2x2"]["ops"]["DET"].asFloat() << std::endl;
     // Convert json matrix to standard 2d matrix
     Json::Value matrix = jsonRoot["input"]["A"]["2x2"]["matrix"];
     int rows = matrix.size();
